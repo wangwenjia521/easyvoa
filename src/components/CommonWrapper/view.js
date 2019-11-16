@@ -44,8 +44,12 @@ export default class CommonWrapper extends React.Component{
     getCommonInfo() {
         fetch('/api/common.json').then((res) => res.json() ).then(this.handleGetInfoSucc.bind(this)).catch(this.handleGetInfoErr.bind(this))
     }
-    handleGetInfoSucc() {
-        console.log('succ')
+    handleGetInfoSucc(res) {
+        var action = {
+            type: 'change_list',
+            list: res.data.list
+        }
+      console.log(action)
     }
     handleGetInfoErr() {
         console.log('err')

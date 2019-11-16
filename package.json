@@ -2,6 +2,7 @@
   "name": "easyvoa",
   "version": "0.1.0",
   "private": true,
+  "proxy":"http://localhost:3000/mock",
   "dependencies": {
     "antd": "^3.25.1",
     "react": "^16.12.0",
