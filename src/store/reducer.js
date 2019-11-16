@@ -1,5 +1,5 @@
-import {CombineReducer } from 'redux'
-import commonReducer from '../components/CommonWrapper/commonReducer'
-export default CombineReducer({
+import {combineReducers } from 'redux'
+import { reducer as commonReducer} from '../components/CommonWrapper/'
+export default combineReducers({
     common: commonReducer
 })

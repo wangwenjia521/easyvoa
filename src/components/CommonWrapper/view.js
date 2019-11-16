@@ -1,7 +1,14 @@
 import React from 'react'
 import './style.css'
 import { Row, Col, Menu, Icon  } from 'antd'
+import store from '../../store/index'
+import { getChangeListAction } from './actionCreator'
 export default class CommonWrapper extends React.Component{
+    constructor(props) {
+        super(props)
+        this.state = store.getState()
+        store.subscribe(this.handleStoreChange.bind(this))
+    }
     render() {
         return (
             <div>
@@ -11,27 +18,14 @@ export default class CommonWrapper extends React.Component{
                          </Col>
                     <Col span={18}>
                     <Menu  mode="horizontal">
-                        <Menu.Item >
-                        <Icon type="appstore" />
-                            英语学习
-                        </Menu.Item>
-                        <Menu.Item >
-                        <Icon type="appstore" />
-                            英语学习
-                        </Menu.Item>
-                        <Menu.Item >
-                        <Icon type="appstore" />
-                            英语学习
-                        </Menu.Item>
-                        <Menu.Item >
-                        <Icon type="appstore" />
-                            英语学习
-                        </Menu.Item>
-                        <Menu.Item >
-                        <Icon type="appstore" />
-                            英语学习
-                        </Menu.Item>
-                        
+                           {this.state.common.list.map((value) => {
+                               return (
+                                <Menu.Item key={value.id}>
+                                <Icon type="appstore" />
+                                {value.title}
+                                </Menu.Item> 
+                               )
+                           })}
                     </Menu>
                     </Col>
                 </Row>
@@ -41,17 +35,18 @@ export default class CommonWrapper extends React.Component{
     componentDidMount() {
         this.getCommonInfo()
     }
+    handleStoreChange() {
+        this.setState(store.getState())
+     }
     getCommonInfo() {
         fetch('/api/common.json').then((res) => res.json() ).then(this.handleGetInfoSucc.bind(this)).catch(this.handleGetInfoErr.bind(this))
     }
     handleGetInfoSucc(res) {
-        var action = {
-            type: 'change_list',
-            list: res.data.list
-        }
-      console.log(action)
+        const action = getChangeListAction(res.data.list)
+        store.dispatch(action)
     }
     handleGetInfoErr() {
         console.log('err')
     }
+   
 }
