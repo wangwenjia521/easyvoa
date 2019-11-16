@@ -3,22 +3,23 @@ import './style.css'
 import { Row, Col, Menu, Icon  } from 'antd'
 import store from '../../store/index'
 import { getChangeListAction } from './actionCreator'
-export default class CommonWrapper extends React.Component{
-    constructor(props) {
-        super(props)
-        this.state = store.getState()
-        store.subscribe(this.handleStoreChange.bind(this))
-    }
+import {connect } from 'react-redux'
+ class CommonWrapper extends React.Component{
+    // constructor(props) {
+    //     super(props)
+    //     this.state = store.getState()
+    //     store.subscribe(this.handleStoreChange.bind(this))
+    // }
     render() {
         return (
             <div>
                 <Row>
                     <Col span={6}>
-                        <img  className="logo" src={require('../../statics/images/logo.jpg')}></img>
+                        <img  className="logo" src={require('../../statics/images/logo.jpg')} alt=""></img>
                          </Col>
                     <Col span={18}>
                     <Menu  mode="horizontal">
-                           {this.state.common.list.map((value) => {
+                           {this.props.list.map((value) => {
                                return (
                                 <Menu.Item key={value.id}>
                                 <Icon type="appstore" />
@@ -35,18 +36,32 @@ export default class CommonWrapper extends React.Component{
     componentDidMount() {
         this.getCommonInfo()
     }
-    handleStoreChange() {
-        this.setState(store.getState())
-     }
+    // handleStoreChange() {
+    //     this.setState(store.getState())
+    //  }
     getCommonInfo() {
-        fetch('/api/common.json').then((res) => res.json() ).then(this.handleGetInfoSucc.bind(this)).catch(this.handleGetInfoErr.bind(this))
-    }
-    handleGetInfoSucc(res) {
-        const action = getChangeListAction(res.data.list)
-        store.dispatch(action)
+        fetch('/api/common.json').then((res) => res.json() )
+        .then(this.props.changeList)
+        .catch(this.handleGetInfoErr.bind(this))
     }
     handleGetInfoErr() {
         console.log('err')
     }
    
 }
+const mapStateToProps = (state) => ({
+    list: state.common.list
+})
+const mapDispatchToProps = (dispatch) => {
+    return{
+        changeList: (res) => {
+            const action = getChangeListAction(res.data.list)
+            store.dispatch(action)
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommonWrapper)
+
+
+
